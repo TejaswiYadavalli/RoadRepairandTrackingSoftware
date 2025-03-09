@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clerk Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        main {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Clerk Dashboard</h1>
+    </header>
+
+    <main>
+    <h2>Complaints List</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Complaint ID</th>
+                <th>Problem</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="complaintsTable">
+            <!-- Complaint Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+
+    <h2>Resource Allocation</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Complaint ID</th>
+                <th>Manpower Needed</th>
+                <th>Machines Needed</th>
+                <th>Manpower Allocated</th>
+                <th>Machines Allocated</th>
+            </tr>
+        </thead>
+        <tbody id="resourcesTable">
+            <!-- Resource Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+    <button id="updateNeedsBtn" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+        Update Needs
+    </button>
+</div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("http://localhost:8080/RoadRepairandTrackingSoftware/ClerkDashboardServlet")  // Ensure this matches your servlet URL pattern
+            .then(response => response.json())
+            .then(data => {
+                const complaintsTable = document.getElementById("complaintsTable");
+                const resourcesTable = document.getElementById("resourcesTable");
+
+                data.forEach(complaint => {
+                    // Add Complaint Data
+                    const complaintRow = document.createElement("tr");
+                    complaintRow.innerHTML = `
+                        <td>${complaint.complaintid}</td>
+                        <td>${complaint.problem}</td>
+                        <td>${complaint.status}</td>
+                    `;
+                    complaintsTable.appendChild(complaintRow);
+
+                    // Add Resource Allocation Data
+                    const resourceRow = document.createElement("tr");
+                    resourceRow.innerHTML = `
+                        <td>${complaint.complaintid}</td>
+                        <td>${complaint.manpower_need}</td>
+                        <td>${complaint.machines_need}</td>
+                        <td>${complaint.manpower_allocated}</td>
+                        <td>${complaint.machines_allocated}</td>
+                    `;
+                    resourcesTable.appendChild(resourceRow);
+                });
+            })
+            .catch(error => console.error("Error fetching complaints:", error));
+    });
+</script>
+<div id="popupForm" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+    <h3>Update Needs</h3>
+    <label>Complaint ID:</label>
+    <input type="number" id="complaintId" required><br><br>
+    
+    <label>Manpower Needed:</label>
+    <input type="number" id="manpowerNeed" required><br><br>
+    
+    <label>Machines Needed:</label>
+    <input type="number" id="machinesNeed" required><br><br>
+
+    <button id="submitUpdate" style="background-color: green; color: white; padding: 5px 10px; border: none;">Submit</button>
+    <button id="closePopup" style="background-color: red; color: white; padding: 5px 10px; border: none;">Close</button>
+</div>
+
+<script>
+    document.getElementById("updateNeedsBtn").addEventListener("click", function () {
+        document.getElementById("popupForm").style.display = "block";
+    });
+
+    document.getElementById("closePopup").addEventListener("click", function () {
+        document.getElementById("popupForm").style.display = "none";
+    });
+
+    document.getElementById("submitUpdate").addEventListener("click", function () {
+        const complaintId = document.getElementById("complaintId").value;
+        const manpowerNeed = document.getElementById("manpowerNeed").value;
+        const machinesNeed = document.getElementById("machinesNeed").value;
+
+        if (!complaintId || !manpowerNeed || !machinesNeed) {
+            alert("Please fill all fields.");
+            return;
+        }
+
+        // Send the data to the server
+       
+
+const formData = new URLSearchParams();
+formData.append("complaintId", complaintId);
+formData.append("manpowerNeed", manpowerNeed);
+formData.append("machinesNeed", machinesNeed);
+
+fetch("http://localhost:8080/RoadRepairandTrackingSoftware/UpdateNeedsServlet", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: formData
+})
+.then(response => response.text())  // Now parsing text instead of JSON
+.then(data => {
+    console.log("Response from servlet:", data);
+    alert("Response from server: " + data);
+
+    if (data.includes("Update successful")) {
+        document.getElementById("popupForm").style.display = "none";
+    }
+})
+.catch(error => {
+    console.error("Error updating needs:", error);
+    alert("Failed to update needs.");
+})
+    });
+
+</script>
+
+</body>
+</html>

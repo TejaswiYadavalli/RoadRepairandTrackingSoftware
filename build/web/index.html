@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Repair & Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        html,body {
+            background-color: #f4f4f4;
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            color:#ffaa00;
+        }
+        /* Header */
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .nav-buttons button {
+            background-color: #ffcc00;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .nav-buttons button:hover {
+            background-color: #ff9900;
+        }
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: url('https://source.unsplash.com/1600x900/?road,construction') no-repeat center center/cover;
+            color: white;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .hero .buttons button {
+            background-color: #ffcc00;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .hero .buttons button:hover {
+            background-color: #ff9900;
+        }
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Road Repair & Tracking</h1>
+        
+            <div class="nav-buttons">
+    <button onclick="showPopup('Login')">Login</button>
+    <button onclick="showPopup('Sign Up')">Sign Up</button>
+
+    <!-- Popup Box -->
+    <div id="popupBox" class="popup" style="
+        display: none; position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); background: white;
+        padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 8px; text-align: center; width: 320px;">
+        
+        <h2 id="popupTitle" style="margin-bottom: 10px; font-size: 22px; color: #333;">Login</h2>
+        <p style="font-size: 16px; margin-bottom: 10px; color: #555;">Choose your role:</p>
+
+        <form id="roleForm" onsubmit="return checkAdminCredentials(event)">
+    <label style="display: flex; align-items: center; font-size: 16px; margin: 8px 0; color:black;">
+        <input type="radio" name="role" value="Resident" onclick="toggleUserFields('Resident')" style="margin-right: 10px;"> Resident
+    </label>
+    <label style="display: flex; align-items: center; font-size: 16px; margin: 8px 0; color:black;">
+        <input type="radio" name="role" value="Clerk" onclick="toggleUserFields('Clerk')" style="margin-right: 10px;"> Clerk
+    </label>
+    <label style="display: flex; align-items: center; font-size: 16px; margin: 8px 0; color:black;">
+        <input type="radio" name="role" value="Administrator" onclick="toggleUserFields('Administrator')" style="margin-right: 10px;"> Administrator
+    </label>
+
+    <!-- User ID & Password Fields (Hidden Initially) -->
+    <div id="userFields" style="display: none; margin-top: 10px;">
+        <label style="font-size: 16px; color:black;">User ID:</label>
+        <input type="text" id="userId" required>
+
+        <label style="font-size: 16px; color:black;">Password:</label>
+        <input type="password" id="userPassword" required>
+
+        <p id="errorMsg" style="color: red; display: none;">Invalid Credentials!</p>
+    </div>
+
+    <button type="submit" style="
+        background: #ffcc00; border: none; padding: 10px 15px;
+        cursor: pointer; border-radius: 5px; font-size: 16px;">Continue</button>
+</form>
+
+function toggleUserFields(role) {
+    const userFields = document.getElementById("userFields");
+    userFields.style.display = role ? "block" : "none"; // Show only if a role is selected
+}
+
+        <button onclick="closePopup()" style="
+            background: #ff4d4d; color: white; padding: 10px 15px;
+            border: none; cursor: pointer; border-radius: 5px; margin-top: 10px;
+            font-size: 16px;">Close</button>
+    </div>
+
+    <script>
+        function toggleUserFields(role) {
+    const userFields = document.getElementById("userFields");
+    userFields.style.display = role ? "block" : "none"; // Show only if a role is selected
+}
+
+        function showPopup(action) {
+            document.getElementById("popupTitle").innerText = action; // Updates the popup title dynamically
+            document.getElementById("popupBox").style.display = "block"; // Shows the popup
+        }
+
+        function closePopup() {
+            document.getElementById("popupBox").style.display = "none"; // Hides the popup
+        }
+        function checkAdminCredentials(event) {
+    const role = document.querySelector('input[name="role"]:checked')?.value;
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (role) {
+        event.preventDefault(); // Stop form submission for credential check
+
+        const userId = document.getElementById("userId").value;
+        const userPassword = document.getElementById("userPassword").value;
+
+        let validCredentials = false;
+        let redirectPage = "";
+
+if (role === "Administrator" && userId === "admin" && userPassword === "123456") {
+    validCredentials = true;
+    redirectPage = "admin_dashboard.html"; // Redirect to Admin Dashboard
+} else if (role === "Clerk" && userId === "clerk" && userPassword === "123456") {
+    validCredentials = true;
+    redirectPage = "clerk_dashboard.html"; // Redirect to Clerk Dashboard
+} else if (role === "Resident" && userId === "resident" && userPassword === "123456") {
+    validCredentials = true;
+    redirectPage = "resident_dashboard.html"; // Redirect to Resident Dashboard
+}
+
+if (validCredentials) {
+    window.location.href = redirectPage; // Redirect to respective dashboard
+}
+ else {
+            errorMsg.style.display = "block"; // Show error message
+            return false; // Prevent further action
+        }
+    }
+
+    return true; // Allow form submission if no role is selected
+}
+
+
+    </script>
+</div>
+
+
+    <script>
+        function showPopup(action) {
+            document.getElementById("popupTitle").innerText = action;
+            document.getElementById("popupBox").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("popupBox").style.display = "none";
+        }
+    </script>
+</div>
+
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h2>Efficient Road Maintenance & Tracking</h2>
+        <p>Report road issues, track repair progress, and stay informed.</p>
+        <div class="buttons">
+            <button>Get Started</button>
+            <button>Learn More</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Road Repair & Tracking. All Rights Reserved.</p>
+    </div>
+
+</body>
+</html>

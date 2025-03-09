@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Complaint Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        .form-container h2 {
+            text-align: center;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Resident Complaint Form</h2>
+        <form id="residentForm" action="SubmitComplaintServlet" method="post">
+    <label for="residentName">Name:</label>
+    <input type="text" name="residentName" required>
+
+    <label for="residentPhone">Phone Number:</label>
+    <input type="text" name="residentPhone" required>
+
+    <label for="residentEmail">Email ID:</label>
+    <input type="email" name="residentEmail" required>
+
+    <label for="residentPassword">Password:</label>
+    <input type="password" name="residentPassword" required>
+
+    <label for="problem">Describe the Problem:</label>
+    <textarea name="problem" rows="4" required></textarea>
+
+    <button type="submit">Submit</button>
+</form>
+
+    </div>
+
+    
+</body>
+</html>
